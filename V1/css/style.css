@@ -1,0 +1,129 @@
+/* YOUR CUSTOM STYLES */
+/*--------------\
+|   Content     |
+|---------------|
+|	Tags 		|
+|Global Classes	|
+|	Header		|
+|	Main		|
+|	Footer 		|
+|	MQuerie		|
+\--------------*/
+
+
+/*-----Tags-----*/
+
+/*div {
+	outline: solid red 1px;
+}*/
+
+body {
+	background: grey;
+}
+
+/*----Global Classes-----*/
+
+
+
+
+
+/*----Header-----*/
+.big {
+	font-size: 30px;
+}
+/*---------------*/
+
+
+/*-------Main---------*/
+
+/*-------Index--------*/
+
+.main {
+	background-color: #87AAF2;
+	padding-top: 2%;
+}
+
+.bcustom {
+	font-size: 16px;
+	background-color: #192989;
+}
+
+.bcustom span {
+	margin: 0 auto;
+}
+
+.desc {
+	margin: 0 auto;
+}
+
+.desc a {
+	color: #15878A;
+}
+
+.desc p {
+	font-family: 'Trebuchet MS';
+	color: #15477A;
+}
+
+/*--------END INDEX---------*/
+
+/*------Account--------*/
+
+.imgprof {
+	width: 100%;
+	height: 40%;
+	display:flex;
+}
+
+.nickname {
+	font-size: 15px;
+}
+
+
+.table {
+	padding-top: 4%;
+}
+
+.day {
+	outline: black solid 1px;
+	text-align: center;
+}
+
+.imggame {
+	width:50%;
+}
+
+/*----Footer-----*/
+
+.footer {
+	background-color: #1E0707;
+	color: white;
+	padding-top: 2%;
+}
+
+.title {
+	text-align: center;
+	padding-bottom: 1%;
+}
+
+.empty {
+	list-style-type: none;
+	margin-top: 9%;
+}
+
+
+/*-----MQuerie------*/
+
+@media (max-width: 700px) {
+	.imgprof {
+		width: 64px;
+		height: 64px;
+	}
+}
+
+@media (max-width: 350px) {
+	.imgprof {
+		width: 32px;
+		height: 32px;
+	}
+}
