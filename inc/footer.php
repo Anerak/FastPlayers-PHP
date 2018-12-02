@@ -18,3 +18,5 @@
 	<script src="./js/main.js"></script>
 	</body>
 </html>
+<?php //Good job from Linguist, detecting this file as Hack instead of PHP
+?>
