@@ -1,77 +1,94 @@
 <?php
-	include('includes/header.php');
-$valid = true;
+include('./inc/header.php');
+
 if (isset($_SESSION['idusers'])) {
-        header('Location: ../index.php'); 
-    } else {
-        $nickname = filter_var($_REQUEST['nickname'], FILTER_SANITIZE_STRING);
-        $email = filter_var($_REQUEST['email'], FILTER_SANITIZE_EMAIL);
-        $passw = md5($_REQUEST['passw'] . "2j5");
-    
-        $sql = "SELECT * FROM users WHERE email = '$email' OR nickname = '$nickname';";
-    
-        $rs = mysqli_query($db,$sql);
-        $r = mysqli_fetch_array($rs);
-        
-        if ($r) {
-            $valid = false;
-        
-        } else {
-            if ($nickname == $r['nickname']) {
-            	
-            } else {
-                $into = "INSERT INTO `users` (`email`,`passw`,`nickname`) VALUES ('$email','$passw','$nickname');";
-                $reg = mysqli_query($db, $into);
-                $sql = "SELECT * FROM users WHERE email = '$email';";
-                $rs = mysqli_query($db, $sql);
-                $getid = mysqli_fetch_array($rs);
-                $_SESSION['idusers'] = $getid['idusers'];
-                $_SESSION['nickname'] = $getid['nickname'];
-                header('Location: ../index.php');
-        }
-    } 
+	header('Location: /');
 }
-
 ?>
-			<!-- Banner -->
-				<section id="banner">
-					<div class="content">
-						<header>
-							<h2>Registrarse</h2>
-							<p>Estas a un paso de formar parte de FastPlayers :D
-							</p>
-						</header>
-						<section>
-								<form method="post" action="register.php">
-									<div class="row uniform 50%">
-										<div class="6u 12u$(xsmall)">
-											<input type="text" name="nickname" id="nickname" placeholder="Nickname" required/>
-										</div>
-										<div class="6u$ 12u$(xsmall)">
-											<input type="email" name="email" id="email" placeholder="Email" required/>
-										</div>
-										<div class="12u$">
-											<input type="password" name="passw" id="passw" placeholder="Password" required/>
-										</div>
-										<div class="12u$">
-											<ul class="actions">
-												<li><input type="submit" value="Registrarse" class="special" /></li>
-												<li><input type="reset" value="Reiniciar campos" /></li>
-											</ul>
-										</div>
-										<?php
-										if (!$valid) {
-											echo "<div class='dcenter'><h3>El e-mail o nickname ya están registrados</h3></div>";
-										}
-										?>
-									</div>
-								</form>
-							</section>
-					</div>
-				</section>
-
-			
-<!-- INCLUDE FOOTER-->
-			<?php 
-			include('includes/footer.php');
-			?>
+<!-- Main -->
+<main>
+	<div class="container">
+		<form method="POST" id="lform" action="./inc/rprocess.php">
+			<div class="row">
+				<h1 id="response">
+				<?php if (isset($_GET['error'])) {
+					switch ($_GET['error']) {
+						case 1:
+						echo 'Email no registrado';
+							break;
+						case 2:
+							echo 'Nickname ya registrado';
+							break;
+						case 3:
+							echo 'Nickname con caracteres inválidos';
+							break;
+						case 4:
+							echo 'Nickname con cantidad inválida de caracteres';
+							break;
+						case 5:
+							echo 'Contraseña con caracteres inválidos';
+							break;
+						case 6:
+							echo 'Contraseña con cantidad inválida de caracteres';
+							break;
+						case 7:
+							echo 'Error al insertar información en la base de datos';
+							break;
+						case 8:
+							echo 'Error al iniciar sesión';
+							break;
+						case 9;
+							echo 'Email vacío';
+							break;
+						case 10:
+							echo 'Nickname vacío';
+							break;
+						case 11:
+							echo 'Contraseña vacía';
+							break;
+						case 12:
+							echo 'Error en el proceso de registro';
+							break;
+						case 13:
+							echo 'Error insertando información';
+							break;
+						default:
+							echo 'Hubo un error inesperado';
+							break;
+					}
+					?>
+					 <i class="far fa-frown s"></i>
+				<?php } else { ?>
+					¿Listo para empezar?
+				<?php } ?>
+				</h1>
+				<div class="six columns offset-by-three">
+					<label for="email">E-mail</label>
+					<input type="email" placeholder="example@mail.com" id="email" name="email" class="u-full-width" required>
+				</div>
+			</div>
+			<div class="row a">
+				<div class="three columns offset-by-three">
+					<label for="nickname">Nickname</label>
+					<input type="text" placeholder="5 a 14 caracteres" id="nickname" name="nickname" class="u-full-width" pattern="[A-Za-z,0-9]{5,14}" maxlength="14" required>
+				</div>
+				<div class="three columns">
+					<label for="password">Contraseña</label>
+					<input type="password" placeholder="6 a 15 caracteres" id="passw" name="passw" class="u-full-width" pattern="[A-Za-z,0-9]{6,15}" maxlength="15" required>
+				</div>
+			</div>
+			<div class="row a">
+				<p>Solo caracteres alfanuméricos</p>
+				<div class="four columns offset-by-four">
+					<input type="submit" id="submit" name="submit" class="button button-primary u-full-width" value="Registrarse">
+				</div>
+			</div>
+			<div class="row">
+				<div class="two columns offset-by-five">
+					<a href="/login.php" class="a e s"><p>¿Ya tienes una cuenta? <i class="far fa-smile"></i></p></a>
+				</div>
+			</div>
+		</form>
+	</div>
+</main>
+<?php include('./inc/footer.php'); ?>

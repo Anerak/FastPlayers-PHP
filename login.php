@@ -1,72 +1,69 @@
-<?php
-	include('includes/header.php');
-$valid = true;
+<?php include('./inc/header.php');
 if (isset($_SESSION['idusers'])) {
-    
-     //Si ya esta logeado, se redirige al index.php
-    header('Location: ../index.php');
-    
-    
-} else {
-   //Si no esta logeado, se procede a comparar
-   if (isset($_REQUEST['email']) && isset($_REQUEST['passw'])) {
-    	$email = filter_var($_REQUEST['email'], FILTER_SANITIZE_EMAIL);
-    	$passw = md5($_REQUEST['passw'] . "2j5");
-	    $sql = "SELECT * FROM users WHERE email = '$email' AND '$passw';";
-	    $rs = mysqli_query($db,$sql);
-	    $getid = mysqli_fetch_array($rs);
-	    $comparepass = $getid['passw'];
-	    //Verificacion
-	    if ($passw == $comparepass) {
-	        $_SESSION['idusers'] = $getid['idusers'];
-	        $_SESSION['nickname'] = $getid['nickname'];
-	        $_SESSION['imglink'] = $getid['imglink'];
-	        $_SESSION['idjuegos'] = $getid['idjuegos'];
-	        header('Location: ../index.php');
-	    } else {
-	        $valid = false;
-	    }
-   }
-}
-
-?>
-			<!-- Banner -->
-				<section id="banner">
-					<div class="content">
-						<header>
-							<h2>Iniciar sesión</h2>
-							<p>Es bueno verte de nuevo :P
-							</p>
-						</header>
-						<section>
-								<form method="post" action="login.php">
-									<div class="row uniform 50%">
-										<div class="12u$">
-											<input type="email" name="email" id="email" placeholder="Email" required/>
-										</div>
-										<div class="12u$">
-											<input type="password" name="passw" id="passw" placeholder="Password" required/>
-										</div>
-										<div class="12u$">
-											<ul class="actions">
-												<li><input type="submit" value="Iniciar sesión" class="special" /></li>
-												<li><input type="reset" value="Reiniciar campos" /></li>
-											</ul>
-										</div>
-										<?php
-										if (!$valid) {
-											echo "<div class='dcenter'><h3>Datos inválidos</h3></div>";
-										}
-										
-										?>
-									</div>
-								</form>
-							</section>
-					</div>
-				</section>
-
-			
-<!-- INCLUDE FOOTER-->
-			<?php 
-			include('includes/footer.php');
-			?>
+	header('Location: /');
+} ?>
+<!-- Main -->
+<main>
+	<div class="container">
+		<form action="./inc/lprocess.php" method="POST">
+			<div class="row a">
+				<h1 id="response">
+				<?php if (isset($_GET['error'])) {
+					switch ($_GET['error']) {
+						case 1:
+							echo 'Email no registrado';
+							break;
+						case 2:
+							echo 'Contraseña con caracteres inválidos';
+							break;
+						case 3:
+							echo 'Contraseña con cantidad de caracteres inválida';
+							break;
+						case 4:
+							echo 'Contraseña inválida';
+							break;
+						case 5:
+							echo 'Falta el email';
+							break;
+						case 6:
+							echo 'Falta la contraseña';
+							break;
+						case 7:
+							echo 'Error al iniciar sesión';
+							break;
+						default:
+							echo 'Hubo un error inesperado';
+							break;
+					}
+					?>
+					 <i class="far fa-frown s"></i>
+				<?php } else {?>
+					Es bueno verte de nuevo <i class="far fa-smile r"></i>
+				<?php } ?>
+				</h1>
+				
+				<div class="six columns offset-by-three">
+					<label for="email">E-mail</label>
+					<input type="email" placeholder="example@mail.com" id="email" name="email" class="u-full-width" required>
+				</div>
+			</div>
+			<div class="row a">
+				<div class="six columns offset-by-three">
+					<label for="password">Contraseña</label>
+					<input type="password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="passw" name="passw" class="u-full-width" pattern="[A-Za-z,0-9]{6,15}" maxlength="15" required>
+				</div>
+			</div>
+			<div class="row a">
+				<div class="four columns offset-by-four">
+					<input type="submit" name="submit" class="button button-primary u-full-width" value="Iniciar sesión">
+				</div>
+			</div>
+			<div class="row">
+				<div class="two columns offset-by-five">
+					<a href="/register.php" class="a e s"><p>¿No tienes una cuenta? <i class="far fa-frown"></i></p></a>
+				</div>
+			</div>
+		</form>
+	</div>
+</main>
+<?php include('./inc/footer.php'); ?>

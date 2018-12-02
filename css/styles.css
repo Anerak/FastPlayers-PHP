@@ -1,0 +1,130 @@
+body {background-color: #1c1d26;
+	color: #FFFFFF;
+	vertical-align: baseline;
+	text-align: center;}
+
+header {
+	position: sticky;
+	top: 0;
+	z-index: 200;
+	background-color: #272833;
+	width: 100%;
+}
+
+main {
+	z-index: 1;
+	margin-top: 2%;
+}
+
+footer {
+	background-color: #272833;
+	padding: 6rem;
+	font-size: 3rem;
+	position: relative;
+	bottom: 0;
+}
+
+input {transition: border-color 0.2s ease-in-out;}
+
+::placeholder,td,th {
+	text-align: center;
+}
+
+th,tr:nth-child(even) {
+	background-color: #272833;
+}
+
+td:active:not(:first-child){
+	color: red;
+}
+
+input[type="time"] {
+		appearance: none;
+		background: transparent;
+		border-radius: 4px;
+		border: solid 1px #ffffff;
+}
+
+input[type="time"]:invalid{
+	box-shadow: none;
+}
+
+input[type="time"]:focus {
+	border-color: #e44c65;
+}
+
+.a {text-align: center;
+vertical-align: baseline}
+.b {font-size: 1.8rem;}
+.c {list-style: none;}
+.d {color: #FFFFFF;}
+.e {text-decoration: none;}
+.e:hover {text-decoration: underline dotted #e44c65;}
+.f {margin: 8%;}
+.g {padding-top: 2%;}
+.h {display: none;}
+.i {background-color: #e44c65;}
+.j {color: #e44c65;}
+.k {font-size: 4rem;}
+.l {font-size: 10rem;}
+.m {margin-top: 5%;}
+.n {font-size: 12rem;}
+.o {text-transform: none;}
+.q,.r,.s{transition: color 0.3s ease-in;}
+.q:hover {color: white;}
+.r:hover {color: #e44c65;}
+.s {animation: breath-r 2s infinite alternate;}
+.t {margin-bottom: 1%;}
+.u {margin: 1%;}
+.v {font-size: 1.6rem;}
+.w {font-size: 3rem;}
+.z {font-size: 1rem;}
+
+.ov {overflow-x: auto;}
+/* * {outline:1px red solid;}*/
+.y ul a {margin-left:25%;}
+ul.y li {display: inline-block;
+margin-left:  2rem;}
+
+.lookingtoplay {
+	width: 20rem;
+}
+
+.profileimg {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+@media (max-width: 550px) {
+	.logo {
+		display: none;
+	}
+	.lookingtoplay {
+		width:90%;
+	}
+	button,button.button-primary {
+		border: 2px solid #FFF;
+	}
+
+	div>div.description div:not(:first-child) {
+		margin-top: 8%;
+	}
+
+  nav div.menu {
+    display: none;
+  }
+  nav div {
+  	background-color: #bb3f53;
+  }
+  .f {margin: 4%;}
+  .h {display: inline-flex;}
+
+  ul.t>div:nth-child(odd) {
+	background-color:#C9354D;
+  }
+
+}
+
+@keyframes breath-r {
+	100% {color: #e44c65;}
+}

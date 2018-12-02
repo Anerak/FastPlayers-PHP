@@ -1,313 +1,146 @@
 <?php
-	include('includes/header.php');
+include('./inc/header.php');
+if (isset($_GET['id'])) {
+	$idother = $_GET['id'];
+} else {
+	header('Location: login.php');
+}
 
-	if (!isset($_SESSION['idusers'])) {
-		header('Location: register.php');
-	} else {
-		$profid = $_GET['idusers'];
 
-		$sql = "SELECT * FROM `users` WHERE idusers = '$profid' ;";
+	try {
+		$db = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+		$sql = "SELECT nickname, steam_acc, para_jugar, imglink, horarios FROM users WHERE idusers = '$idother';";
 		$rs = mysqli_query($db, $sql);
+		$r = mysqli_fetch_array($rs);
+		if ($r) {
+			$steamacc = $r['steam_acc'];			
+			$ltp = $r['para_jugar'];
+			$foo = $r['nickname'];
+			$imglink= $r['imglink'];
+			$otrohorarios = json_decode($r['horarios'], true);
+		} else {
+			throw new Exception('No entré');
+		}
+		
 
-		$getdata = mysqli_fetch_array($rs);
+	} catch (Exception $e) {
+		echo $e->getMessage();
+	} finally {
+		$db->close();
 	}
 ?>
-			<!-- Banner -->
-				<section id="banner">
-					<div class="content">
-						<header>
-							<div class="row">
-								<div class="4u 12u$(medium) dcenter">
-									<?php
-									if ($getdata['imglink'] != null) {
-										echo "<div><img class='fit imgacc' src='" . $getdata['imglink']. "'></div>";
-									} else {
-										echo "<div class='noimg'><h3>Sin imagen</h3></div>";
-									}
-								?>
-								</div>
-								<div class="4u 12u$(medium) dcenter">
-									<h2 class="accnick"><?php echo $getdata['nickname'];?></h2>
-									<ul class="alt">
-										<li>
-											<i class='fa fa-steam-square' aria-hidden='true'></i>
-												<?php
-													if (isset($getdata['steam_acc'])) {
-														echo "<a href='" . $getdata['steam_acc'] . "' target='_blank'>Perfil de Steam</a>";
-													} else {
-														echo "Sin perfil de Steam :(";
-													}
-												?>
-											</i>
-										</li>
-									</ul>
-								</div>
-								<div class="4u$ 12u$(medium) dcenter">
-									<h3>Deseando jugar...</h3>
-									<?php
-									$game = $getdata['idjuegos'];
-									$game2 = $getdata['para_jugar'];
-									$game3 = $getdata['own_game'];
-									
-									if (($game == null) && ($game2 == null) && ($game3 == null)) {
-										echo "<h3>Este usuario no ha elegido ningún juego :/</h3>";
-									} else {
-										if ($game != null) {
-											$sql = "SELECT * FROM `juegos` WHERE idjuegos = '$game';";
-	                                    	$rs = mysqli_query($db,$sql);
-	                                    	$gamedata = mysqli_fetch_array($rs);
-	                                    	echo "<a href='".$gamedata['steam_link']."' target='_blank'><div class='imggamediv'><img src='".$gamedata['steam_img']."' class='imggame' /></div></a>";
-										}
-										
-										if ($game2 != null) {
-											$sql = "SELECT * FROM `juegos` WHERE idjuegos = '$game2';";
-	                                    	$rs = mysqli_query($db,$sql);
-	                                    	$gamedata = mysqli_fetch_array($rs);
-	                                    	echo "<a href='".$gamedata['steam_link']."' target='_blank'><div class='imggamediv'><img src='".$gamedata['steam_img']."' class='imggame' /></div></a>";
-										}
-									
-									
-										if ($game3 != null) {
-											$sql = "SELECT * FROM `juegos` WHERE idjuegos = '$game3';";
-											$rs = mysqli_query($db,$sql);
-											$gamedata = mysqli_fetch_array($rs);
-											echo "<a href='".$gamedata['steam_link']."' target='_blank'><div class='imggamediv'><img src='".$gamedata['steam_img']."' class='imggame' /></div></a>";
-										}
-									}
-									?>
-								</div>
-							</div>
-						</header>
-						
-					</div>
-					<a href="#one" class="goto-next scrolly">Next</a>
-				</section>
 
-			<!-- One -->
-				<section id="one" class="spotlight style1 top">
-					<div class="content">
-						<div class="container">
-							<div class="row">
-								<div class="12u 12u$(medium) horariotitle">
-									<h2>Horarios</h2>
-									<?php
-									if (!empty($getdata['husohorario'])) {
-										$searchhuso = "SELECT * FROM `husoshorarios` WHERE idhuso = ".$getdata['husohorario'].";";
-										$dbhuso = mysqli_query($db,$searchhuso);
-										$fetchhuso = mysqli_fetch_array($dbhuso);
-										
-										echo "<h2>" .$fetchhuso['text'] . "</h2>";
+<main>
+	<div class="container g t">
+		<div class="row">
+			<div class="four columns offset-by-half">
+			<?php if ((isset($imglink)) && ($imglink !== "")) {?>
+					<img src="<?php echo $imglink;?>" class="profileimg">
+			<?php } else { ?>
+				<i class="fa fa-image n r"></i>
+			<?php } ?>
+			</div>
+			<div class="four columns offset-by-one">
+				<h1 class="w"><i class="fa fa-user"></i> <?php echo $foo; ?></h1>
+				<p>
+				<?php if ((isset($steamacc)) && ($steamacc !== "")) {?>
+					<a href="<?php $steamacc; ?>" class="r" target="blank"><i class="fab fa-steam b"></i> <?php echo $steamacc; ?></a>
+				<?php } else { ?>
+					<p>Sin cuenta de Steam</p>
+				<?php } ?>
+				</p>
+				
+			</div>
+			<div class="two columns">
+				<div>
+					<?php if ((isset($ltp)) && ($ltp !== "0")) {?>
+						<a href="https://store.steampowered.com/app/<?php echo $ltp; ?>" target="blank"><img class="lookingtoplay" src="http://cdn.akamai.steamstatic.com/steam/apps/<?php echo $ltp;?>/header.jpg"></a>
+					<?php  } else {?>
+							<i class="fa fa-cookie-bite n r"></i>
+					<?php } ?>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="row ov">
+			<div class="twelve columns">
+				<table class="u-full-width">
+					<thead>
+						<tr>
+							<th></th>
+							<th>D</th>
+							<th>L</th>
+							<th>M</th>
+							<th>X</th>
+							<th>J</th>
+							<th>V</th>
+							<th>S</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Desde</td>
+							<?php for ($x = 0; $x < 7; $x++) { ?>
+								<td><?php if (isset($otrohorarios)) {
+									if (($otrohorarios[$x][0]['desde'] !== ":") && ($otrohorarios[$x][0]['desde'] !== "")) {
+										echo $otrohorarios[$x][0]['desde'];
 									} else {
-										echo "<h2>GMT no especificado</h2>";
+										echo "-";
 									}
-									?>
-									<div class="row">
-											<div class="12u$ 12u$(medium)">
-												<div class="table-wrapper">
-													<table>
-														<thead>
-															<tr>
-																<th></th>
-																<th class="thalign">Domingo</th>
-																<th class="thalign">Lunes</th>
-																<th class="thalign">Martes</th>
-																<th class="thalign">Miércoles</th>
-																<th class="thalign">Jueves</th>
-																<th class="thalign">Viernes</th>
-																<th class="thalign">Sábado</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
-															<td></td>
-														</tr>
-														<tr>
-															<td>Hora desde</td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '1';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '2';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '3';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '4';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-																$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '5';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '6';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '7';";
-															$rs = mysqli_query($db, $sql);
-															$hdesde = mysqli_fetch_array($rs);
-															if (isset($hdesde['hora_desde'])) {
-																echo $hdesde['hora_desde'];
-															} else {
-																echo "-";
-															}
-															?></td>
-														</tr>
-														<tr>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-														</tr>
-														<tr>
-															<td>Hora hasta</td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '1';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '2';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-															echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '3';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '4';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '5';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '6';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-															<td><?php
-															$sql = "SELECT * FROM `horarios` WHERE idusers = '$profid' AND dia = '7';";
-															$rs = mysqli_query($db, $sql);
-															$hhasta = mysqli_fetch_array($rs);
-															if (isset($hhasta['hora_hasta'])) {
-																echo $hhasta['hora_hasta'];
-															} else {
-																echo "-";
-															}
-															?></td>
-														</tr>
-														<tr>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-															<td></td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--<a href="#footer" class="goto-next scrolly">Next</a>-->
-				</section>
+								} else {
+									echo "-";
+								}
+								?></td>
+							<?php } ?>
+						</tr>
+						<tr>
+							<td>Hasta</td>
+							<?php for ($x = 0; $x < 7; $x++){?>
+								<td><?php if (isset($otrohorarios)) {
+									if (($otrohorarios[$x][0]['hasta'] !== ":") && ($otrohorarios[$x][0]['hasta'] !== "")) {
+										echo $otrohorarios[$x][0]['hasta'];
+									} else {
+									echo "-";
+									}
+								} else {
+									echo "-";
+								}
+								?></td>
+							<?php }?>
+						</tr>
 
-
-<!-- INCLUDE FOOTER-->
-			<?php 
-			include('includes/footer.php');
-			?>
+						<tr>
+							<td>Desde</td>
+							<?php for ($x = 7; $x < 14; $x++) {?>
+								<td><?php if (isset($otrohorarios)) {
+									if (($otrohorarios[$x][1]['desde'] !== ":") && ($otrohorarios[$x][1]['desde'] !== "")) {
+										echo $otrohorarios[$x][1]['desde'];
+									} else {
+									echo "-"; }
+								} else {
+									echo "-";
+								}?></td>
+							<?php } ?>
+						</tr>
+						<tr>
+							<td>Hasta</td>
+							<?php for ($x = 7; $x < 14; $x++) { ?>
+								<td><?php if (isset($otrohorarios)) {
+									if (($otrohorarios[$x][1]['hasta'] !== ":") && ($otrohorarios[$x][1]['hasta'] !== "")) {
+											echo $otrohorarios[$x][1]['hasta'];
+										} else {
+											echo "-";
+										}
+									} else {
+										echo "-";
+									}
+								?></td>
+							<?php } ?>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+<?php include('./inc/footer.php'); ?>
